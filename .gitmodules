@@ -1,0 +1,6 @@
+[submodule "gapbs"]
+	path = gapbs
+	url = https://ajaustin@bitbucket.org/ajaustin/gapbs.git
+[submodule "silo"]
+	path = silo
+	url = https://ajaustin@bitbucket.org/ajaustin/silo.git
