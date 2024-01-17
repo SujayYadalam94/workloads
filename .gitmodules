@@ -4,3 +4,9 @@
 [submodule "gapbs"]
 	path = gapbs
 	url = https://github.com/sbeamer/gapbs.git
+[submodule "graph500"]
+	path = graph500
+	url = https://github.com/graph500/graph500.git
+[submodule "XSBench"]
+	path = XSBench
+	url = https://github.com/ANL-CESAR/XSBench.git
