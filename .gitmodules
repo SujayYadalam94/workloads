@@ -1,3 +1,6 @@
 [submodule "silo"]
 	path = silo
 	url = https://ajaustin@bitbucket.org/ajaustin/silo.git
+[submodule "gapbs"]
+	path = gapbs
+	url = https://github.com/sbeamer/gapbs.git
