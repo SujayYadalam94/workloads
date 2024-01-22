@@ -10,3 +10,6 @@
 [submodule "XSBench"]
 	path = XSBench
 	url = https://github.com/ANL-CESAR/XSBench.git
+[submodule "vmitosis-workloads"]
+	path = vmitosis-workloads
+	url = https://github.com/mitosis-project/vmitosis-workloads.git
