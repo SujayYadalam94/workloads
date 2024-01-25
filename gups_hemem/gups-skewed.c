@@ -65,6 +65,9 @@ struct gups_args {
 
 static unsigned long updates, nelems;
 
+void __attribute__((optimize("O0"))) StartTracing() {}
+void __attribute__((optimize("O0"))) StopTracing() { char dummy = 0; } // need dummy to avoid compiler optimization
+
 static uint64_t lfsr_fast(uint64_t lfsr)
 {
   lfsr ^= lfsr >> 7;
@@ -119,6 +122,8 @@ static void *do_gups(void *arguments)
   index1 = 0;
   index2 = 0;
 
+  StartTracing();
+
   for (i = 0; i < args->iters; i++) {
     hot_num = lfsr_fast(lfsr) % 100;
     if (hot_num < 90) {
@@ -150,6 +155,8 @@ static void *do_gups(void *arguments)
       }
     }
   }
+
+  StopTracing();
 
   return 0;
 }

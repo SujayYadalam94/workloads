@@ -78,6 +78,9 @@ static unsigned long updates, nelems;
 
 bool stop = false;
 
+void __attribute__((optimize("O0"))) StartTracing() {}
+void __attribute__((optimize("O0"))) StopTracing() { char dummy = 0; }
+
 static void *timing_thread()
 {
   uint64_t tic = -1;
@@ -182,6 +185,8 @@ static void *do_gups(void *arguments)
   index1 = 0;
   index2 = 0;
 
+  StartTracing();
+
   for (i = 0; i < args->iters; i++) {
     hot_num = lfsr_fast(lfsr) % 100;
     if (hot_num < 90) {
@@ -231,6 +236,8 @@ static void *do_gups(void *arguments)
       break;
     }
   }
+
+  StopTracing();
 
   fprintf(stderr, "before_accesses: %lu\n", before_accesses);
 
