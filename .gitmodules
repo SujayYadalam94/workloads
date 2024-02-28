@@ -13,3 +13,6 @@
 [submodule "vmitosis-workloads"]
 	path = vmitosis-workloads
 	url = https://github.com/mitosis-project/vmitosis-workloads.git
+[submodule "masim"]
+	path = masim
+	url = https://github.com/sjp38/masim.git
