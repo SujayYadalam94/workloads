@@ -145,8 +145,6 @@ static void *do_gups(void *arguments)
   index1 = 0;
   index2 = 0;
 
-  fprintf(hotsetfile, "Thread %d region: %p - %p\thot set: %p - %p\n", args->tid, field, field + (args->size), field + args->hot_start, field + args->hot_start + (args->hotsize));   
-
   StartTracing();
 
   for (i = 0; i < args->iters; i++) {
