@@ -19,3 +19,6 @@
 [submodule "redis"]
 	path = redis
 	url = https://github.com/redis/redis.git
+[submodule "memcached"]
+	path = memcached
+	url = https://github.com/memcached/memcached.git
