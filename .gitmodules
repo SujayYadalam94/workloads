@@ -16,3 +16,6 @@
 [submodule "masim"]
 	path = masim
 	url = https://github.com/sjp38/masim.git
+[submodule "redis"]
+	path = redis
+	url = https://github.com/redis/redis.git
