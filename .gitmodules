@@ -22,3 +22,6 @@
 [submodule "memcached"]
 	path = memcached
 	url = https://github.com/memcached/memcached.git
+[submodule "duckdb"]
+	path = duckdb
+	url = https://github.com/duckdb/duckdb.git
