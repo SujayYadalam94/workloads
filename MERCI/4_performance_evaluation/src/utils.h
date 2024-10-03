@@ -187,10 +187,10 @@ void eval(T &ep, QueryData &qd, const size_t core_count, vector<thread> &t, int 
         if(core_count > 0) {
             for(size_t i=0; i<core_count; i++) {
                 t[i] = thread(&T::process, &ep, ref(qd.partitioned_query[i]), i);
-                cpu_set_t cpuset;
-                CPU_ZERO(&cpuset);
-                CPU_SET(i, &cpuset);
-                int rc = pthread_setaffinity_np(t[i].native_handle(),sizeof(cpu_set_t), &cpuset);
+//                cpu_set_t cpuset;
+//                CPU_ZERO(&cpuset);
+//                CPU_SET(i, &cpuset);
+//                int rc = pthread_setaffinity_np(t[i].native_handle(),sizeof(cpu_set_t), &cpuset);
             }
             for(size_t i=0; i<core_count; i++)
                 t[i].join();
