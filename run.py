@@ -37,16 +37,15 @@ def start_pebs(output_file):
         os.system('rm {}'.format(pipe))
     os.system('mkfifo {}'.format(pipe))
 
+    print('Starting PEBS...')
     # Run PEBS in the background, capture stdout to a file
     # Use subprocess to run in the background
-    cmd = 'sudo {}/bin/pebs_periodic_reads.x {} {} {} < {} &'.format(PEBS_PATH, sampling_period, epoch_size, output_file, pipe)
+    cmd = 'sudo {}/bin/pebs_periodic_reads.x {} {} {} {} &'.format(PEBS_PATH, sampling_period, epoch_size, output_file, pipe)
     pebs_proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     if pebs_proc.poll() is not None:
         print('PEBS failed to start.')
         exit(1)
-
-    os.system('sleep infinity > {} &'.format(pipe))
     
     return pebs_proc
 
@@ -113,7 +112,9 @@ def main():
         os.system('cd {}/XSBench/openmp-threading && make'.format(WORKLOADS_PATH))
 
         # Run XSBench
+        pebs_proc = start_pebs('xsbench.dat')
         os.system('taskset 0xFF {}/XSBench/openmp-threading/XSBench -t {} -p {} -g {}'.format(WORKLOADS_PATH, num_threads, particles, gridpoints))
+        stop_pebs(pebs_proc)
 
     elif args.workload == 'gapbs-bc':
         num_threads = 8
