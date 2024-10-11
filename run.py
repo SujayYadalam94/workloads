@@ -118,41 +118,48 @@ def main():
 
     elif args.workload == 'gapbs-bc':
         num_threads = 8
-        num_iter    = 16
-       # graph_path  = '/mnt/nvme/dataset/gapbs/twitter.sg' # other options: kron_s28.sg
-        graph_path  = '/mnt/nvme/dataset/gapbs/kron_s28.sg'
+        num_rep     = 5
+        num_iter    = 5
+        graph_path  = '/mnt/nvme/dataset/gapbs/twitter.sg' # other options: kron_s28.sg
+        #graph_path  = '/mnt/nvme/dataset/gapbs/kron_s28.sg'
 
         # Build GAPBS if not built
         os.system('cd {}/gapbs && make'.format(WORKLOADS_PATH))
 
         # Run GAPBS
-        os.system('OMP_NUM_THREADS={} taskset 0xFF {}/gapbs/bc -n {} -f {}'.format(num_threads, WORKLOADS_PATH, num_iter, graph_path))
+        pebs_proc = start_pebs('gapbs-bc.dat')
+        os.system('OMP_NUM_THREADS={} taskset 0xFF {}/gapbs/bc -n {} -i {} -f {}'.format(num_threads, WORKLOADS_PATH, num_rep, num_iter, graph_path))
+        stop_pebs(pebs_proc)
 
     elif args.workload == 'gapbs-cc':
         num_threads = 8
-        num_iter    = 16
-        #graph_path  = '/mnt/nvme/dataset/gapbs/twitter.sg' # other options: kron_s28.sg
-        graph_path  = '/mnt/nvme/dataset/gapbs/kron_s28.sg'
+        num_rep     = 5
+        num_iter    = 5
+        graph_path  = '/mnt/nvme/dataset/gapbs/twitter.sg' # other options: kron_s28.sg
+        #graph_path  = '/mnt/nvme/dataset/gapbs/kron_s28.sg'
 
         # Build GAPBS if not built
         os.system('cd {}/gapbs && make'.format(WORKLOADS_PATH))
 
         # Run GAPBS
         pebs_proc = start_pebs('gapbs-cc.dat')
-        os.system('OMP_NUM_THREADS={} taskset 0xFF {}/gapbs/cc -n {} -f {}'.format(num_threads, WORKLOADS_PATH, num_iter, graph_path))
+        os.system('OMP_NUM_THREADS={} taskset 0xFF {}/gapbs/cc -n {} -i {} -f {}'.format(num_threads, WORKLOADS_PATH, num_rep, num_iter, graph_path))
         stop_pebs(pebs_proc)
 
     elif args.workload == 'gapbs-pr':
         num_threads = 8
-        num_iter    = 16
-        #graph_path  = '/mnt/nvme/dataset/gapbs/twitter.sg' # other options: kron_s28.sg
-        graph_path  = '/mnt/nvme/dataset/gapbs/kron_s28.sg'
+        num_rep     = 5
+        num_iter    = 5
+        graph_path  = '/mnt/nvme/dataset/gapbs/twitter.sg' # other options: kron_s28.sg
+        #graph_path  = '/mnt/nvme/dataset/gapbs/kron_s28.sg'
 
         # Build GAPBS if not built
         os.system('cd {}/gapbs && make'.format(WORKLOADS_PATH))
 
         # Run GAPBS
-        os.system('OMP_NUM_THREADS={} taskset 0xFF {}/gapbs/pr -n {} -f {}'.format(num_threads, WORKLOADS_PATH, num_iter, graph_path))
+        pebs_proc = start_pebs('gapbs-pr.dat')
+        os.system('OMP_NUM_THREADS={} taskset 0xFF {}/gapbs/pr -n {} -i {} -f {}'.format(num_threads, WORKLOADS_PATH, num_rep, num_iter, graph_path))
+        stop_pebs(pebs_proc)
 
     elif args.workload == 'graph500':
         num_threads     = 8
