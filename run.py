@@ -163,14 +163,17 @@ def main():
 
     elif args.workload == 'graph500':
         num_threads     = 8
-        size            = 27 # 2^27 vertices ~ 68GB
+        size            = 26 # 2^26 vertices ~ 34GB
         skip_validation = 1
 
         # Build Graph500 if not built
+        # TODO: checkout master branch -> cp make-inc -> set gcc and enable OMP
         os.system('cd {}/graph500 && make'.format(WORKLOADS_PATH))
 
         # Run Graph500
+        pebs_proc = start_pebs('graph500.dat')
         os.system('SKIP_VALIDATION={} OMP_NUM_THREADS={} taskset 0xFF {}/graph500/omp-csr/omp-csr -s {} -V'.format(skip_validation, num_threads, WORKLOADS_PATH, size))
+        stop_pebs(pebs_proc)
 
     elif args.workload == 'liblinear':
         num_threads = 8
@@ -180,6 +183,8 @@ def main():
         os.system('cd {}/liblinear-2.47 && make'.format(WORKLOADS_PATH))
 
         # Run training
+        pebs_proc = start_pebs('liblinear.dat')
         os.system('taskset 0xFF {}/liblinear-2.47/train -s 6 -m {} {}'.format(WORKLOADS_PATH, num_threads, dataset))
+        stop_pebs(pebs_proc)
 
 main()
