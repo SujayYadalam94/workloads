@@ -19,7 +19,8 @@ workloads = [
     'gapbs-cc',
     'gapbs-pr',
     'graph500',
-    'liblinear'
+    'liblinear',
+    'flexkvs'
 ]
 
 pipe = '/tmp/pebs_pipe'
@@ -185,6 +186,20 @@ def main():
         # Run training
         pebs_proc = start_pebs('liblinear.dat')
         os.system('taskset 0xFF {}/liblinear-2.47/train -s 6 -m {} {}'.format(WORKLOADS_PATH, num_threads, dataset))
+        stop_pebs(pebs_proc)
+
+    elif args.workload == 'flexkvs':
+        num_threads = 8
+        kv_size     = 32*1024*1024*1024
+        warmup_time = 20
+        run_time    = 100
+
+        # Build flexkvs if not built
+        os.system('cd {}/flexkvs && make'.format(WORKLOADS_PATH))
+
+        # Run the benchmark
+        pebs_proc = start_pebs('flexkvs.dat')
+        os.system('taskset 0xFF {}/flexkvs/kvsbench -t {} -T {} -w {} -h 0.25 127.0.0.1:1211 -S {}'.format(WORKLOADS_PATH, num_threads, run_time, warmup_time, kv_size))
         stop_pebs(pebs_proc)
 
 main()
