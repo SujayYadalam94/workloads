@@ -4,6 +4,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
+#include <time.h>
 #include "linear.h"
 #include <omp.h>
 #define Malloc(type,n) (type *)malloc((n)*sizeof(type))
@@ -107,11 +108,29 @@ int flag_solver_specified;
 int nr_fold;
 double bias;
 
+void sub_timespec(struct timespec t1, struct timespec t2, struct timespec *td)
+{
+	static unsigned long long NS_PER_SECOND = 1000000000ULL;
+
+	td->tv_nsec = t2.tv_nsec - t1.tv_nsec;
+	td->tv_sec  = t2.tv_sec - t1.tv_sec;
+	if (td->tv_sec > 0 && td->tv_nsec < 0) {
+		td->tv_nsec += NS_PER_SECOND;
+		td->tv_nsec--;
+	} else if (td->tv_sec < 0 && td->tv_nsec > 0) {
+		td->tv_nsec -= NS_PER_SECOND;
+		td->tv_sec++;
+	}
+}
+
 int main(int argc, char **argv)
 {
 	char input_file_name[1024];
 	char model_file_name[1024];
 	const char *error_msg;
+
+	double elapsed_secs;
+	struct timespec start, end, delta;
 
 	parse_command_line(argc, argv, input_file_name, model_file_name);
 	read_problem(input_file_name);
@@ -133,7 +152,13 @@ int main(int argc, char **argv)
 	}
 	else
 	{
+		clock_gettime(CLOCK_MONOTONIC, &start);
 		model_=train(&prob, &param);
+		clock_gettime(CLOCK_MONOTONIC, &end);
+		sub_timespec(start, end, &delta);
+		elapsed_secs = ((double)delta.tv_sec) + \
+					((double)delta.tv_nsec) / 1000000000UL;
+		fprintf(stderr, "Elapsed time: %.4lf seconds\n", elapsed_secs);
 		if(save_model(model_file_name, model_))
 		{
 			fprintf(stderr,"can't save model to file %s\n",model_file_name);
