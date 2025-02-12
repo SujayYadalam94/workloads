@@ -249,15 +249,18 @@ int main(int argc, char **argv)
   int i;
   void *p;
   struct gups_args** ga;
+  bool use_hugetlb;
+  int mmap_flags;
   pthread_t t[MAX_THREADS];
 
-  if (argc != 6) {
-    fprintf(stderr, "Usage: %s [threads] [updates per thread] [exponent] [data size (bytes)] [noremap/remap]\n", argv[0]);
+  if (argc != 6 && argc != 7) {
+    fprintf(stderr, "Usage: %s [threads] [updates per thread] [exponent] [data size (bytes)] [hot size] <hugetlb>\n", argv[0]);
     fprintf(stderr, "  threads\t\t\tnumber of threads to launch\n");
     fprintf(stderr, "  updates per thread\t\tnumber of updates per thread\n");
     fprintf(stderr, "  exponent\t\t\tlog size of region\n");
     fprintf(stderr, "  data size\t\t\tsize of data in array (in bytes)\n");
     fprintf(stderr, "  hot size\t\t\tlog size of hot set\n");
+    fprintf(stderr, "  hugetlb\t\t\twhether or not to use HugeTLBFS for GUPS data. Default: y\n");
     return 0;
   }
 
@@ -278,12 +281,19 @@ int main(int argc, char **argv)
   elt_size = atoi(argv[4]);
   log_hot_size = atof(argv[5]);
   tot_hot_size = (unsigned long)(1) << log_hot_size;
+  if (argc == 6)
+    use_hugetlb = true;
+  else
+    use_hugetlb = (argv[6][0] == 'Y' || argv[6][0] == 'y' || argv[6][0] == '1');
 
   fprintf(stderr, "%lu updates per thread (%d threads)\n", updates, threads);
   fprintf(stderr, "field of 2^%lu (%lu) bytes\n", expt, size);
   fprintf(stderr, "%ld byte element size (%ld elements total)\n", elt_size, size / elt_size);
 
-  p = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS | MAP_HUGETLB | MAP_POPULATE, -1, 0);
+  mmap_flags = MAP_SHARED | MAP_ANONYMOUS | MAP_POPULATE;
+  if (use_hugetlb)
+    mmap_flags |= MAP_HUGETLB;
+  p = mmap(NULL, size, PROT_READ | PROT_WRITE, mmap_flags, -1, 0);
   if (p == MAP_FAILED) {
     perror("mmap");
     assert(0);
