@@ -25,3 +25,6 @@
 [submodule "duckdb"]
 	path = duckdb
 	url = https://github.com/duckdb/duckdb.git
+[submodule "YCSB"]
+	path = YCSB
+	url = https://github.com/brianfrankcooper/YCSB.git
